@@ -22,7 +22,7 @@ def main():
     # server_ip = '192.168.1.35'
     server_ip = '127.0.0.1'
     port = 1337
-    log_file = '/home/pi/Desktop/lab4200'
+    log_file = '/home/pi/Desktop'
 
     # Create a UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

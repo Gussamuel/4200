@@ -1,6 +1,6 @@
 Traceback (most recent call last):
-  File "/home/pi/Desktop/lab4200/lightserver.py", line 50, in <module>
+  File "/home/pi/Desktop/lab4200/4200/lightserver.py", line 49, in <module>
     main()
-  File "/home/pi/Desktop/lab4200/lightserver.py", line 39, in main
-    s_n, ack_n, ack, syn, fin, payload = struct.unpack('!IIccc', data)
-struct.error: unpack requires a buffer of 11 bytes
+  File "/home/pi/Desktop/lab4200/4200/lightserver.py", line 39, in main
+    with open(log_file, 'a') as f:
+IsADirectoryError: [Errno 21] Is a directory: '/home/pi/Desktop'
