@@ -1,6 +1,3 @@
-#server
-#/home/pi/Desktop/lab4200
-
 import socket
 import sys
 import struct
@@ -36,7 +33,7 @@ def main():
         data, address = sock.recvfrom(4096)
         if data:
             # Unpack the data and log it
-            s_n, ack_n, ack, syn, fin, payload = struct.unpack('!IIccc', data)
+            s_n, ack_n, ack, syn, fin, payload = struct.unpack('!IIccc'+str(len(data)-11)+'s', data)
             with open(log_file, 'a') as f:
                 f.write(f'RECV {s_n} {ack_n} {ack} {syn} {fin}\n')
 
