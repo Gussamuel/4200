@@ -27,6 +27,7 @@ def main():
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         server_address = (server_ip, port)
+        message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
         
         while True:
             try:
