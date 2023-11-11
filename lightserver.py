@@ -18,8 +18,8 @@ def create_packet(s_n, ack_n, ack, syn, fin, payload):
     return data  
 
 def blink_led():
-    # Blink the LED in intervals of 0.2 seconds for a total of 3 seconds
-    for _ in range(15):
+    # Blink the LED in intervals of 0.2 seconds for a total of 2 seconds
+    for _ in range(10):
         GPIO.output(LED, GPIO.HIGH)
         time.sleep(0.2)
         GPIO.output(LED, GPIO.LOW)
@@ -51,8 +51,8 @@ def main():
                 if payload.decode() == 'MotionDetected':
                     print("Motion detected payload received!")
                     blink_led()
-                    
-                print("Connected!")
+                elif payload.decode() == 'Hello, server':
+                    print("Hello, server payload received!")
 
     except KeyboardInterrupt:
         print("Closing...")

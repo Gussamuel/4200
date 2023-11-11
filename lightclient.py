@@ -37,11 +37,13 @@ def main():
                     message = create_packet(100, 0, 'Y', 'N', 'N', 'MotionDetected')
                     print("Sending 'MotionDetected' message to server...")
                     sock.sendto(message, server_address)
+                    time.sleep(3)
                 else:
                     # No motion detected, send 'Hello, server' message
                     message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
                     print("Sending 'Hello, server' message to server...")
                     sock.sendto(message, server_address)
+                    time.sleep(2)
 
             except KeyboardInterrupt:
                 print("Closing...")
