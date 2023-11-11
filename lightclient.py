@@ -27,7 +27,12 @@ def main():
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         server_address = (server_ip, port)
+        message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
         
+        # Send initial message
+        print("Sending 'Hello, server' message to server...")
+        sock.sendto(message, server_address)
+
         while True:
             try:
                 # Detect motion
@@ -35,22 +40,8 @@ def main():
                     print("Motion detected!")
                     # Motion detected, send a packet to the server
                     message = create_packet(100, 0, 'Y', 'N', 'N', 'MotionDetected')
-                else:
-                    message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
-                
-                # Send data
-                print("Sending message to server...")
-                sock.sendto(message, server_address)
-
-                # Receive response
-                data, server = sock.recvfrom(4096)
-                s_n, ack_n, ack, syn, fin, payload = struct.unpack('!IIccc', data)
-                print("Received message from server:", payload.decode())  # Print the received message
-                
-                with open(log_file, 'a') as f:
-                    f.write(f'SEND {s_n} {ack_n} {ack} {syn} {fin}\n')
-                
-                print("Connected!")
+                    print("Sending 'MotionDetected' message to server...")
+                    sock.sendto(message, server_address)
 
             except KeyboardInterrupt:
                 print("Closing...")
@@ -60,4 +51,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
