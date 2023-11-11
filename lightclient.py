@@ -43,16 +43,8 @@ def main():
                     # No motion detected, send 'Hello, server' message
                     message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
                     print("Sending 'Hello, server' message to server...")
-                    while message:
-                        sock.sendto(message, server_address)
-                        time.sleep(2)
-                        if GPIO.input(PIR):
-                            print("Motion detected!")
-                            # Motion detected, send a packet to the server
-                            message = create_packet(100, 0, 'Y', 'N', 'N', 'MotionDetected')
-                            print("Sending 'MotionDetected' message to server...")
-                            sock.sendto(message, server_address)
-                            time.sleep(3)
+                    sock.sendto(message, server_address)
+                    time.sleep(2)
 
             except KeyboardInterrupt:
                 print("Closing...")
