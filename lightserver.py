@@ -1,4 +1,4 @@
-#server
+#server, use this
 import socket
 import sys
 import struct
