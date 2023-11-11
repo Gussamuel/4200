@@ -21,7 +21,7 @@ def main():
         # Parse command line arguments
         server_ip = '127.0.0.1'
         port = 1337
-        log_file = '/home/pi/Desktop'
+        log_file = '/home/pi/Desktop/lab4200/4200/server.log'
 
         # Create a UDP socket
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
