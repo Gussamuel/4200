@@ -22,7 +22,7 @@ def create_packet(s_n, ack_n, ack, syn, fin, payload):
 def main():
     # Parse command line arguments
     port = 1337
-    log_file = '/home/pi/Desktop'
+    log_file = './server_log.txt'
 
     # Create a UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

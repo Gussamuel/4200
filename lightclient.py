@@ -1,8 +1,8 @@
 #client
 import socket
-import sys
 import struct
 import RPi.GPIO as GPIO
+import time
 
 PIR = 24
 GPIO.setmode(GPIO.BCM)
@@ -22,7 +22,7 @@ def main():
     # server_ip = '192.168.1.35'
     server_ip = '127.0.0.1'
     port = 1337
-    log_file = '/home/pi/Desktop'
+    log_file = './client_log.txt'
 
     # Create a UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -32,6 +32,7 @@ def main():
     try:
         # Send data
         sock.sendto(message, server_address)
+        time.sleep(1)  # Give server time to set up
 
         # Receive response
         data, server = sock.recvfrom(4096)
@@ -44,6 +45,7 @@ def main():
             # Motion detected, send a packet to the server
             message = create_packet(100, 0, 'Y', 'N', 'N', 'MotionDetected')
             sock.sendto(message, server_address)
+
     finally:
         sock.close()
 
