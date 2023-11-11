@@ -1,53 +1,76 @@
-#client
+# lightclient.py
+# from EmulatorGUI import GPIO
 import socket
 import struct
 import RPi.GPIO as GPIO
 import time
+import sys
 
 PIR = 24
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(PIR, GPIO.IN)
 
 def create_packet(s_n, ack_n, ack, syn, fin, payload):
-    data = struct.pack('!I', s_n) #pack the sequence number
-    data += struct.pack('!I', ack_n) #pack the acknowledgement number
-    data += struct.pack("!c", ack.encode()) #pack the ACK
-    data += struct.pack("!c", syn.encode()) #pack the SYN
-    data += struct.pack("!c", fin.encode()) #pack the FIN
-    data += payload.encode() #pack the payload
-    return data  
+    header = struct.pack('!II', s_n, ack_n)
+    flags = (ack << 2) | (syn << 1) | fin
+    header += struct.pack('!B', flags)
+    data = header + payload.encode()
+    return data
+
 
 def main():
-    # Parse command line arguments
-    # server_ip = '192.168.1.35'
-    server_ip = '127.0.0.1'
-    port = 1337
-    log_file = './client_log.txt'
+    if len(sys.argv) != 7 or sys.argv[1] != "-s" or sys.argv[3] != "-p" or sys.argv[5] != "-l":
+        print("Usage: lightclient -s <SERVER-IP> -p <PORT> -l <LOGFILE>")
+        sys.exit(1)
 
-    # Create a UDP socket
+    server_ip = sys.argv[2]
+    port = int(sys.argv[4])
+    log_file = sys.argv[6]
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     server_address = (server_ip, port)
-    message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
-    try:
-        # Send data
+
+    # Step 1: SYN
+    seq_num = 100
+    ack_num = 0
+    message = create_packet(seq_num, ack_num, 0, 1, 0, '')
+    sock.sendto(message, server_address)
+
+    # Step 2: SYN|ACK
+    data, server = sock.recvfrom(4096)
+    s_n, ack_n, flags, payload = struct.unpack('!IIB' + str(len(data)-9) + 's', data)
+    if flags & 0b010:
+        print("Handshake completed.")
+        seq_num += 1
+        ack_num = ack_n + 1
+
+    # Step 3: ACK
+    message = create_packet(seq_num, ack_num, 1, 0, 0, 'DurationAndBlinks')
+    sock.sendto(message, server_address)
+
+    # Receive response (ACK for duration and blinks)
+    data, server = sock.recvfrom(4096)
+    s_n, ack_n, flags, payload = struct.unpack('!IIB' + str(len(data)-9) + 's', data)
+    if flags & 0b001:
+        print(f"Server acknowledged: {payload.decode()}")
+
+    # Detect motion
+    if GPIO.input(PIR):
+        # Motion detected, send a packet to the server
+        message = create_packet(seq_num, ack_num, 1, 0, 0, 'MotionDetected')
         sock.sendto(message, server_address)
-        time.sleep(1)  # Give server time to set up
 
-        # Receive response
+        # Receive response (ACK for motion detection)
         data, server = sock.recvfrom(4096)
-        s_n, ack_n, ack, syn, fin, payload = struct.unpack('!IIccc', data)
-        with open(log_file, 'a') as f:
-            f.write(f'SEND {s_n} {ack_n} {ack} {syn} {fin}\n')
+        s_n, ack_n, flags, payload = struct.unpack('!IIB' + str(len(data)-9) + 's', data)
+        if flags & 0b001:
+            print(f"Server acknowledged motion detection.")
 
-        # Detect motion
-        if GPIO.input(PIR):
-            # Motion detected, send a packet to the server
-            message = create_packet(100, 0, 'Y', 'N', 'N', 'MotionDetected')
-            sock.sendto(message, server_address)
-
-    finally:
-        sock.close()
+    # Send FIN packet
+    message = create_packet(seq_num, ack_num, 0, 0, 1, 'InteractionCompleted')
+    sock.sendto(message, server_address)
+    sock.close()
 
 if __name__ == "__main__":
     main()
