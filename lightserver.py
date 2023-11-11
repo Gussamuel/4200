@@ -17,6 +17,14 @@ def create_packet(s_n, ack_n, ack, syn, fin, payload):
     data += payload.encode() #pack the payload
     return data  
 
+def blink_led():
+    # Blink the LED in intervals of 0.2 seconds for a total of 3 seconds
+    for _ in range(15):
+        GPIO.output(LED, GPIO.HIGH)
+        time.sleep(0.2)
+        GPIO.output(LED, GPIO.LOW)
+        time.sleep(0.2)
+
 def main():
     try:
         # Parse command line arguments
@@ -42,10 +50,7 @@ def main():
 
                 if payload.decode() == 'MotionDetected':
                     print("Motion detected payload received!")
-                    # Blink the LED
-                    GPIO.output(LED, GPIO.HIGH)
-                    time.sleep(1)  # The duration of the blink might be different in your case
-                    GPIO.output(LED, GPIO.LOW)
+                    blink_led()
                     
                 print("Connected!")
 
@@ -56,4 +61,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
