@@ -27,12 +27,7 @@ def main():
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         server_address = (server_ip, port)
-        message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
         
-        # Send initial message
-        print("Sending 'Hello, server' message to server...")
-        sock.sendto(message, server_address)
-
         while True:
             try:
                 # Detect motion
@@ -41,6 +36,11 @@ def main():
                     # Motion detected, send a packet to the server
                     message = create_packet(100, 0, 'Y', 'N', 'N', 'MotionDetected')
                     print("Sending 'MotionDetected' message to server...")
+                    sock.sendto(message, server_address)
+                else:
+                    # No motion detected, send 'Hello, server' message
+                    message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
+                    print("Sending 'Hello, server' message to server...")
                     sock.sendto(message, server_address)
 
             except KeyboardInterrupt:
