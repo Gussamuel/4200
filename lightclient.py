@@ -21,7 +21,7 @@ def main():
         # Parse command line arguments
         server_ip = '127.0.0.1'
         port = 1337
-        log_file = '/home/pi/Desktop/lab4200/4200/server.log'
+        log_file = '/home/pi/Desktop'
 
         # Create a UDP socket
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -32,6 +32,7 @@ def main():
         while True:
             try:
                 # Send data
+                print("Sending message to server...")
                 sock.sendto(message, server_address)
 
                 # Receive response
@@ -42,6 +43,7 @@ def main():
 
                 # Detect motion
                 if GPIO.input(PIR):
+                    print("Motion detected!")
                     # Motion detected, send a packet to the server
                     message = create_packet(100, 0, 'Y', 'N', 'N', 'MotionDetected')
                     sock.sendto(message, server_address)

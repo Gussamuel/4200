@@ -21,7 +21,7 @@ def main():
     try:
         # Parse command line arguments
         port = 1337
-        log_file = '/home/pi/Desktop/lab4200/4200/server.log'
+        log_file = '/home/pi/Desktop'
 
         # Create a UDP socket
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -38,7 +38,10 @@ def main():
                 with open(log_file, 'a') as f:
                     f.write(f'RECV {s_n} {ack_n} {ack} {syn} {fin}\n')
 
+                print("Received payload:", payload.decode())
+
                 if payload.decode() == 'MotionDetected':
+                    print("Motion detected payload received!")
                     # Blink the LED
                     GPIO.output(LED, GPIO.HIGH)
                     time.sleep(1)  # The duration of the blink might be different in your case
