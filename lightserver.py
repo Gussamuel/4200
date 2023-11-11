@@ -1,5 +1,4 @@
-#error fix
-
+#server
 import socket
 import sys
 import struct
@@ -20,30 +19,38 @@ def create_packet(s_n, ack_n, ack, syn, fin, payload):
     return data  
 
 def main():
-    # Parse command line arguments
-    port = 1337
-    log_file = '/home/pi/Desktop'
+    try:
+        # Parse command line arguments
+        port = 1337
+        log_file = '/home/pi/Desktop'
 
-    # Create a UDP socket
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Create a UDP socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-    # Bind the socket to the port
-    server_address = ('', port)
-    sock.bind(server_address)
+        # Bind the socket to the port
+        server_address = ('', port)
+        sock.bind(server_address)
 
-    while True:
-        data, address = sock.recvfrom(4096)
-        if data:
-            # Unpack the data and log it
-            s_n, ack_n, ack, syn, fin, payload = struct.unpack('!IIccc'+str(len(data)-11)+'s', data)
-            with open(log_file, 'a') as f:
-                f.write(f'RECV {s_n} {ack_n} {ack} {syn} {fin}\n')
+        while True:
+            data, address = sock.recvfrom(4096)
+            if data:
+                # Unpack the data and log it
+                s_n, ack_n, ack, syn, fin, payload = struct.unpack('!IIccc'+str(len(data)-11)+'s', data)
+                with open(log_file, 'a') as f:
+                    f.write(f'RECV {s_n} {ack_n} {ack} {syn} {fin}\n')
 
-            if payload.decode() == 'MotionDetected':
-                # Blink the LED
-                GPIO.output(LED, GPIO.HIGH)
-                time.sleep(1)  # The duration of the blink might be different in your case
-                GPIO.output(LED, GPIO.LOW)
+                if payload.decode() == 'MotionDetected':
+                    # Blink the LED
+                    GPIO.output(LED, GPIO.HIGH)
+                    time.sleep(1)  # The duration of the blink might be different in your case
+                    GPIO.output(LED, GPIO.LOW)
+                    
+                print("Connected!")
+
+    except KeyboardInterrupt:
+        print("Closing...")
+    finally:
+        sock.close()
 
 if __name__ == "__main__":
     main()

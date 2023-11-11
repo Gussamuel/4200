@@ -18,18 +18,18 @@ def create_packet(s_n, ack_n, ack, syn, fin, payload):
     return data  
 
 def main():
-    # Parse command line arguments
-    # server_ip = '192.168.1.35'
-    server_ip = '127.0.0.1'
-    port = 1337
-    log_file = '/home/pi/Desktop'
-
-    # Create a UDP socket
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-    server_address = (server_ip, port)
-    message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
     try:
+        # Parse command line arguments
+        server_ip = '127.0.0.1'
+        port = 1337
+        log_file = '/home/pi/Desktop'
+
+        # Create a UDP socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+        server_address = (server_ip, port)
+        message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
+        
         # Send data
         sock.sendto(message, server_address)
 
@@ -44,6 +44,11 @@ def main():
             # Motion detected, send a packet to the server
             message = create_packet(100, 0, 'Y', 'N', 'N', 'MotionDetected')
             sock.sendto(message, server_address)
+            
+        print("Connected!")
+
+    except KeyboardInterrupt:
+        print("Closing...")
     finally:
         sock.close()
 
