@@ -27,7 +27,6 @@ def main():
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         server_address = (server_ip, port)
-        message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
         
         while True:
             try:
@@ -36,12 +35,12 @@ def main():
                     print("Motion detected!")
                     # Motion detected, send a packet to the server
                     message = create_packet(100, 0, 'Y', 'N', 'N', 'MotionDetected')
-                    sock.sendto(message, server_address)
                 else:
                     message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
-                    # Send data
-                    print("Sending message to server...")
-                    sock.sendto(message, server_address)
+                
+                # Send data
+                print("Sending message to server...")
+                sock.sendto(message, server_address)
 
                 # Receive response
                 data, server = sock.recvfrom(4096)
@@ -61,3 +60,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
