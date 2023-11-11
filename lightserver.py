@@ -51,8 +51,8 @@ def main():
                 if payload.decode() == 'MotionDetected':
                     print("Motion detected payload received!")
                     blink_led()
-                elif payload.decode() == 'Hello, server':
-                    print("Hello, server payload received!")
+            if payload.decode() == 'Hello, server':
+                print("Hello, server payload received!")
 
     except KeyboardInterrupt:
         print("Closing...")
