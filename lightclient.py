@@ -2,6 +2,7 @@ import socket
 import sys
 import struct
 import RPi.GPIO as GPIO
+import time
 
 PIR = 24
 GPIO.setmode(GPIO.BCM)
