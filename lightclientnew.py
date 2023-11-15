@@ -28,6 +28,7 @@ def main():
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         server_address = (server_ip, port)
+        hello_sent = False  # Flag to track whether the initial greeting has been sent
 
         while True:
             try:
@@ -39,11 +40,12 @@ def main():
                     print("Sending 'MotionDetected' message to server...")
                     sock.sendto(message, server_address)
                     time.sleep(3)
-                else:
-                    # No motion detected, send 'Hello, server' message
+                elif not hello_sent:
+                    # No motion detected and initial greeting not sent, send 'Hello, server' message
                     message = create_packet(100, 0, 'Y', 'N', 'N', 'Hello, server')
                     print("Sending 'Hello, server' message to server...")
                     sock.sendto(message, server_address)
+                    hello_sent = True  # Set the flag to True
                     time.sleep(2)
 
             except KeyboardInterrupt:
