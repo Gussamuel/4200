@@ -18,10 +18,11 @@ def create_packet(s_n, ack_n, ack, syn, fin, payload):
     return data
 
 def main():
-    if len(sys.argv) != 7 or sys.argv[1] != "-s" or sys.argv[3] != "-p" or sys.argv[5] != "-l":
-        print("Usage: lightclient -s <SERVER-IP> -p <PORT> -l <LOGFILE>")
-        sys.exit(1)
-
+    
+    #if len(sys.argv) != 7 or sys.argv[1] != "-s" or sys.argv[3] != "-p" or sys.argv[5] != "-l":
+     #   print("Usage: lightclient -s <SERVER-IP> -p <PORT> -l <LOGFILE>")
+      #  sys.exit(1)
+    
     # Parse command line arguments
     server_ip = '127.0.0.1'
     port = 1337
