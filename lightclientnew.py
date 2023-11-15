@@ -22,9 +22,10 @@ def main():
         print("Usage: lightclient -s <SERVER-IP> -p <PORT> -l <LOGFILE>")
         sys.exit(1)
 
-    server_ip = sys.argv[2]
-    port = int(sys.argv[4])
-    log_file = sys.argv[6]
+    # Parse command line arguments
+    server_ip = '127.0.0.1'
+    port = 1337
+    log_file = '/home/pi/Desktop/lab4200/4200/server.log'
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
